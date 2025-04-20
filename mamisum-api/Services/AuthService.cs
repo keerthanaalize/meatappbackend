@@ -21,12 +21,12 @@ namespace mamisum_api.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, userId),
-        new Claim(JwtRegisteredClaimNames.Email, email),
-        new Claim(ClaimTypes.NameIdentifier, userId),
-        new Claim(ClaimTypes.Role, role) 
-    };
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userId),
+                new Claim(JwtRegisteredClaimNames.Email, email),
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Role, role) 
+            };
 
             var tokenDescriptor = new JwtSecurityToken(
                 issuer: _configuration["JwtSettings:Issuer"],
