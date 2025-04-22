@@ -26,19 +26,17 @@ namespace mamisum_api.Controllers
         public async Task<IActionResult> CreateDeal([FromForm] CreateDealDto dto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            var deal = DealMapper.ToDeal(dto, userId);
-
-            if (dto.ImageFile != null)
+            if (string.IsNullOrEmpty(userId))
             {
-                deal.ImageUrl = await _imageService.UploadImageAsync(dto.ImageFile, "deals");
+                return Unauthorized(new { message = "User not authenticated" });
             }
 
-            await _dealService.CreateDealAsync(deal);
+            await _dealService.CreateDealAsync(dto, userId);
 
-            return CreatedAtAction(nameof(GetDealById), new { id = deal.Id }, deal);
+            return CreatedAtAction(nameof(GetDealById), new { id = dto.UserId }, dto);
         }
+
 
         [HttpGet("my-deals")]
         public async Task<IActionResult> GetMyDeals()
