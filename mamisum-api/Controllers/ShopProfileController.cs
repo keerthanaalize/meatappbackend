@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using mamisum_api.Models;
 using mamisum_api.DTOs;
 using mamisum_api.Mappers;
+using mamisum_api.Repositories;
+
 
 namespace mamisum_api.Controllers
 {
@@ -17,16 +19,39 @@ namespace mamisum_api.Controllers
     {
         private readonly ShopProfileService _service;
         private readonly ImageService _imageService;
-
-        public ShopProfileController(ShopProfileService service, ImageService imageService)
+        private readonly ICustomerProfileRepository _customerRepo;
+        public ShopProfileController(ShopProfileService service, ImageService imageService, ICustomerProfileRepository customerRepo)
         {
             _service = service;
             _imageService = imageService;
+            _customerRepo = customerRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll() =>
             Ok(await _service.GetAllAsync());
+
+        [AllowAnonymous]
+        [HttpGet("nearby")]
+        public async Task<IActionResult> GetNearbyShops()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("User not found");
+
+            var result = await _service.GetNearbyShopsAsync(userId, _customerRepo);
+            return Ok(result);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("category/{category}")]
+        public async Task<IActionResult> GetByCategory(string category)
+        {
+            var result = await _service.GetByCategoryAsync(category);
+            return Ok(result);
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)

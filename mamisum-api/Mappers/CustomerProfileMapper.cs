@@ -14,6 +14,8 @@ namespace mamisum_api.Mappers
                 MobileNo = dto.MobileNo,
                 EmailId = dto.EmailId,
                 Address = dto.Address,
+                City = dto.City,
+                State = dto.State,
                 ProfileImage = dto.ImageFile != null ? await imageService.UploadImageAsync(dto.ImageFile, "profile") : string.Empty,
                 UserId = userId
             };

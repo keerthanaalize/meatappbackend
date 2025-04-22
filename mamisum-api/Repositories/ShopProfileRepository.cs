@@ -29,5 +29,21 @@ namespace mamisum_api.Repositories
             var result = await _collection.ReplaceOneAsync(p => p.Id == id, profile);
             return result.ModifiedCount > 0;
         }
+
+        public async Task<List<ShopProfile>> GetByCityAsync(string city)
+        {
+            var filter = Builders<ShopProfile>.Filter.Regex("ShopCity", new MongoDB.Bson.BsonRegularExpression(city, "i"));
+            return await _collection.Find(filter).ToListAsync();
+        }
+
+        public async Task<List<ShopProfile>> GetByCategoryAsync(string category)
+        {
+            var filter = Builders<ShopProfile>.Filter.Regex(
+                p => p.ShopCategory,
+                new MongoDB.Bson.BsonRegularExpression($".*{category}.*", "i")
+            );
+
+            return await _collection.Find(filter).ToListAsync();
+        }
     }
 }

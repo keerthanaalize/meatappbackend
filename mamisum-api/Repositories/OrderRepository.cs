@@ -59,9 +59,8 @@ namespace mamisum_api.Repositories
                 .Project(p => p.Id)
                 .ToListAsync();
 
-            var orders = await _orders
-                .Find(o => productIds.Contains(o.ProductId))
-                .ToListAsync();
+            var filter = Builders<Order>.Filter.ElemMatch(o => o.Items, i => productIds.Contains(i.ProductId));
+            var orders = await _orders.Find(filter).ToListAsync();
 
             return orders;
         }

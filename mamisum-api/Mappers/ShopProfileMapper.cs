@@ -16,9 +16,13 @@ namespace mamisum_api.Mappers
                 MobileNo = dto.MobileNo,
                 EmailId = dto.EmailId,
                 ShopAddress = dto.ShopAddress,
+                ShopCity = dto.ShopCity,
                 OwnerName = dto.OwnerName,
                 ShopOpenTime = dto.ShopOpenTime,
-                ShopCloseTime = dto.ShopCloseTime
+                ShopCloseTime = dto.ShopCloseTime,
+                ShopDate = dto.ShopDate,
+                ShopCategory = dto.ShopCategory,
+                ShopState = dto.ShopState,
             };
         }
     }

@@ -47,9 +47,7 @@ namespace mamisum_api.Controllers
             var dto = new OrderWithCustomerDto
             {
                 OrderNo = order.OrderNo,
-                ItemName = order.ItemName,
-                Quantity = order.Quantity,
-                Price = order.Price,
+                Items = order.Items,
                 TotalBillAmount = order.TotalBillAmount,
                 OrderStatus = order.OrderStatus,
                 CustomerName = customer.Name,

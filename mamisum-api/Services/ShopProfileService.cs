@@ -16,11 +16,18 @@ namespace mamisum_api.Services
         }
 
         public async Task<List<ShopProfile>> GetAllAsync() => await _repo.GetAllAsync();
-
         public async Task<ShopProfile?> GetByIdAsync(string id) => await _repo.GetByIdAsync(id);
-
         public async Task CreateAsync(ShopProfile profile) => await _repo.CreateAsync(profile);
+        public async Task<List<ShopProfile>> GetNearbyShopsAsync(string userId, ICustomerProfileRepository customerRepo)
+        {
+            var customer = await customerRepo.GetByUserIdAsync(userId);
+            if (customer == null || string.IsNullOrWhiteSpace(customer.City))
+                return new List<ShopProfile>();
 
+            return await _repo.GetByCityAsync(customer.City); 
+        }
+
+        public async Task<List<ShopProfile>> GetByCategoryAsync(string category) => await _repo.GetByCategoryAsync(category);
         public async Task<bool> UpdateAsync(string id, ShopProfile profile) => await _repo.UpdateAsync(id, profile);
     }
 }

@@ -22,49 +22,49 @@ namespace mamisum_api.Controllers
             _imageService = imageService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateDeal([FromForm] IFormFile imageFile, [FromForm] string title)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+        //[HttpPost]
+        //public async Task<IActionResult> CreateDeal([FromForm] IFormFile imageFile, [FromForm] string title)
+        //{
+        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            var deal = new Deal
-            {
-                Title = title,
-                UserId = userId
-            };
+        //    var deal = new Deal
+        //    {
+        //        Title = title,
+        //        UserId = userId
+        //    };
 
-            if (imageFile != null)
-            {
-                deal.ImageUrl = await _imageService.UploadImageAsync(imageFile, "deals");
-            }
+        //    if (imageFile != null)
+        //    {
+        //        deal.ImageUrl = await _imageService.UploadImageAsync(imageFile, "deals");
+        //    }
 
-            await _dealService.AddDealAsync(deal);
-            return CreatedAtAction(nameof(GetDealById), new { id = deal.Id }, deal);
-        }
+        //    await _dealService.AddDealAsync(deal);
+        //    return CreatedAtAction(nameof(GetDealById), new { id = deal.Id }, deal);
+        //}
 
-        [HttpGet("my-deals")]
-        public async Task<IActionResult> GetMyDeals()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+        //[HttpGet("my-deals")]
+        //public async Task<IActionResult> GetMyDeals()
+        //{
+        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            var deals = await _dealService.GetDealsByUserIdAsync(userId);
-            return Ok(deals);
-        }
+        //    var deals = await _dealService.GetDealsByUserIdAsync(userId);
+        //    return Ok(deals);
+        //}
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDealById(string id)
-        {
-            var deal = await _dealService.GetDealByIdAsync(id);
-            return deal == null ? NotFound() : Ok(deal);
-        }
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetDealById(string id)
+        //{
+        //    var deal = await _dealService.GetDealByIdAsync(id);
+        //    return deal == null ? NotFound() : Ok(deal);
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDeal(string id)
-        {
-            var result = await _dealService.DeleteDealAsync(id);
-            return result ? NoContent() : NotFound();
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteDeal(string id)
+        //{
+        //    var result = await _dealService.DeleteDealAsync(id);
+        //    return result ? NoContent() : NotFound();
+        //}
     }
 }

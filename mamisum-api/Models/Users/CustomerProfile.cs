@@ -12,6 +12,8 @@ namespace mamisum_api.Models.Users
         public string MobileNo { get; set; } = string.Empty;
         public string EmailId { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string State { get; set; } = string.Empty;
         public string ProfileImage { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
     }

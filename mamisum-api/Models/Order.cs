@@ -12,17 +12,8 @@ namespace mamisum_api.Models
         [BsonElement("OrderNo")]
         public string OrderNo { get; set; } = string.Empty;
 
-        [BsonElement("ProductId")]
-        public string ProductId { get; set; } = string.Empty;
-
-        [BsonElement("ItemName")]
-        public string ItemName { get; set; } = string.Empty;
-
-        [BsonElement("Quantity")]
-        public int Quantity { get; set; }
-
-        [BsonElement("Price")]
-        public string Price { get; set; } = string.Empty;
+        [BsonElement("Items")]
+        public List<OrderItem> Items { get; set; } = new();
 
         [BsonElement("SGST")]
         public string SGST { get; set; } = string.Empty;
@@ -35,8 +26,23 @@ namespace mamisum_api.Models
 
         [BsonElement("OrderStatus")]
         public string OrderStatus { get; set; } = "InProgress";
+
         [BsonElement("CustomerId")]
         public string CustomerId { get; set; } = string.Empty;
+    }
 
+    public class OrderItem
+    {
+        [BsonElement("ProductId")]
+        public string ProductId { get; set; } = string.Empty;
+
+        [BsonElement("ItemName")]
+        public string ItemName { get; set; } = string.Empty;
+
+        [BsonElement("Quantity")]
+        public int Quantity { get; set; }
+
+        [BsonElement("Price")]
+        public string Price { get; set; } = string.Empty;
     }
 }
