@@ -6,7 +6,7 @@ namespace mamisum_api.Mappers
 {
     public class ShopProfileMapper
     {
-        public static async Task<ShopProfile> ToShopProfileAsync(CreateShopProfileDto dto, ImageService imageService)
+        public static async Task<ShopProfile> ToShopProfileAsync(CreateShopProfileDto dto, ImageService imageService, string userId)
         {
             return new ShopProfile
             {
@@ -23,6 +23,7 @@ namespace mamisum_api.Mappers
                 ShopDate = dto.ShopDate,
                 ShopCategory = dto.ShopCategory,
                 ShopState = dto.ShopState,
+                UserId = userId
             };
         }
     }

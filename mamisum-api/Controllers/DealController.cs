@@ -37,7 +37,6 @@ namespace mamisum_api.Controllers
             return CreatedAtAction(nameof(GetDealById), new { id = dto.UserId }, dto);
         }
 
-
         [HttpGet("my-deals")]
         public async Task<IActionResult> GetMyDeals()
         {

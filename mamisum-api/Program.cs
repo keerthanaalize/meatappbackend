@@ -1,8 +1,5 @@
 ﻿using System.Text;
-using mamisum_api.Models;
-using mamisum_api.Repositories;
-using mamisum_api.Services;
-using mamisum_api.Utilities;
+using mamisum_api.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,39 +7,12 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddMamisumDependencies(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddSingleton<EmailService>();
-builder.Services.AddSingleton<mamisum_api.Utilities.OTPService>();
-builder.Services.AddSingleton<AuthService>();
-builder.Services.AddSingleton<ImageService>();
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<CustomerProfileService>();
-builder.Services.AddSingleton<ShopProfileService>();
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<CartService>();
-builder.Services.AddScoped<CustomerProfileService>();
-builder.Services.AddScoped<ShopProfileService>();
-builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<TotalOrderService>();
-builder.Services.AddScoped<DealService>();
-
-builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
-
-builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
-builder.Services.AddSingleton<IProductRepository, ProductRepository>();
-builder.Services.AddSingleton<ICartRepository, CartRepository>();
-builder.Services.AddSingleton<ICustomerProfileRepository, CustomerProfileRepository>();
-builder.Services.AddSingleton<IShopProfileRepository, ShopProfileRepository>();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
-builder.Services.AddSingleton<ITotalOrderRepository,TotalOrderRepository >();
-builder.Services.AddSingleton<IDealRepository, DealRepository>();
 
 builder.Services.AddAuthentication(options =>
 {

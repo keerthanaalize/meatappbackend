@@ -16,6 +16,7 @@ namespace mamisum_api.Services
         }
 
         public async Task<List<ShopProfile>> GetAllAsync() => await _repo.GetAllAsync();
+        public async Task<ShopProfile?> GetByUserIdAsync(string userId)  => await _repo.GetByUserIdAsync(userId);
         public async Task<ShopProfile?> GetByIdAsync(string id) => await _repo.GetByIdAsync(id);
         public async Task CreateAsync(ShopProfile profile) => await _repo.CreateAsync(profile);
         public async Task<List<ShopProfile>> GetNearbyShopsAsync(string userId, ICustomerProfileRepository customerRepo)

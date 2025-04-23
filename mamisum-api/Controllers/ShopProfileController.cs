@@ -52,6 +52,15 @@ namespace mamisum_api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("my-profile")]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var profile = await _service.GetByUserIdAsync(userId);
+            return profile == null ? NotFound("Profile not found.") : Ok(profile);
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
@@ -59,19 +68,24 @@ namespace mamisum_api.Controllers
             var result = await _service.GetByIdAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
-
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateShopProfileDto dto)
         {
-            var profile = await ShopProfileMapper.ToShopProfileAsync(dto, _imageService);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var profile = await ShopProfileMapper.ToShopProfileAsync(dto, _imageService, userId);
             await _service.CreateAsync(profile);
+
             return CreatedAtAction(nameof(GetById), new { id = profile.Id }, profile);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromForm] CreateShopProfileDto dto)
         {
-            var profile = await ShopProfileMapper.ToShopProfileAsync(dto, _imageService);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var profile = await ShopProfileMapper.ToShopProfileAsync(dto, _imageService, userId);
             profile.Id = id;
             var updated = await _service.UpdateAsync(id, profile);
             return updated ? NoContent() : NotFound();
