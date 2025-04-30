@@ -26,8 +26,8 @@ namespace mamisum_api.Extensions
             services.AddScoped<CustomerProfileService>();
             services.AddScoped<ShopProfileService>();
             services.AddScoped<OrderService>();
-            services.AddScoped<TotalOrderService>();
             services.AddScoped<DealService>();
+            services.AddScoped<ReviewService>();
 
             // Repositories
             services.AddSingleton<ICategoryRepository, CategoryRepository>();
@@ -36,8 +36,8 @@ namespace mamisum_api.Extensions
             services.AddSingleton<ICustomerProfileRepository, CustomerProfileRepository>();
             services.AddSingleton<IShopProfileRepository, ShopProfileRepository>();
             services.AddSingleton<IOrderRepository, OrderRepository>();
-            services.AddSingleton<ITotalOrderRepository, TotalOrderRepository>();
             services.AddSingleton<IDealRepository, DealRepository>();
+            services.AddSingleton<IReviewRepository, ReviewRepository>();
 
             return services;
         }

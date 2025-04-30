@@ -25,6 +25,29 @@ namespace mamisum_api.Services
             return await _dealRepository.GetDealByIdAsync(id);
         }
 
+        public async Task<List<Deal>> GetDealsByCustomerCityAsync(string userId, ICustomerProfileRepository customerRepo, IShopProfileRepository shopRepo)
+        {
+            var customer = await customerRepo.GetByUserIdAsync(userId);
+            if (customer == null || string.IsNullOrWhiteSpace(customer.City))
+                return new List<Deal>();
+
+            var allDeals = await _dealRepository.GetAllDealsAsync();
+
+            var filteredDeals = new List<Deal>();
+
+            foreach (var deal in allDeals)
+            {
+                var shop = await shopRepo.GetByUserIdAsync(deal.UserId); 
+                if (shop != null && shop.ShopCity == customer.City)
+                {
+                    filteredDeals.Add(deal);
+                }
+            }
+
+            return filteredDeals;
+        }
+
+
         public async Task CreateDealAsync(CreateDealDto dto, string userId)
         {
             var deal = new Deal

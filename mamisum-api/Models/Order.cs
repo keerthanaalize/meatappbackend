@@ -29,6 +29,8 @@ namespace mamisum_api.Models
 
         [BsonElement("CustomerId")]
         public string CustomerId { get; set; } = string.Empty;
+        [BsonElement("DeliveryStatus")]
+        public string DeliveryStatus { get; set; } = string.Empty;
     }
 
     public class OrderItem

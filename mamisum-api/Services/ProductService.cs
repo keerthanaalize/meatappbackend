@@ -6,7 +6,7 @@ namespace mamisum_api.Services
     public class ProductService
     {
         private readonly IProductRepository _meatRepo;
-
+        
         public ProductService(IProductRepository meatRepo)
         {
             _meatRepo = meatRepo;

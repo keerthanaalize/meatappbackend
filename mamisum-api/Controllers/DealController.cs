@@ -3,6 +3,7 @@ using mamisum_api.DTOs;
 using mamisum_api.Mappers;
 using mamisum_api.Models;
 using mamisum_api.Models.Users;
+using mamisum_api.Repositories;
 using mamisum_api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,30 @@ namespace mamisum_api.Controllers
     {
         private readonly DealService _dealService;
         private readonly ImageService _imageService;
+        private readonly ICustomerProfileRepository _customerRepo;
+        private readonly IShopProfileRepository _shopRepo;
 
-        public DealController(DealService dealService, ImageService imageService)
+        public DealController(DealService dealService, ImageService imageService, ICustomerProfileRepository customerRepo, IShopProfileRepository shopRepo)
         {
             _dealService = dealService;
             _imageService = imageService;
+            _customerRepo = customerRepo;
+            _shopRepo = shopRepo;
         }
+
+
+        [HttpGet("get-deals-bycity")]
+        public async Task<IActionResult> GetDealsForCustomer()
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var deals = await _dealService.GetDealsByCustomerCityAsync(userId, _customerRepo, _shopRepo);
+            return Ok(deals);
+        }
+
+
 
         [HttpPost]
         public async Task<IActionResult> CreateDeal([FromForm] CreateDealDto dto)

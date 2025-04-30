@@ -12,7 +12,6 @@ namespace mamisum_api.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-
         private readonly OrderService _service;
 
         public OrderController(OrderService service)
@@ -58,6 +57,14 @@ namespace mamisum_api.Controllers
             return Ok(dto);
         }
 
+        [HttpGet("shopper/sales-report/{shopperId}")]
+        public async Task<IActionResult> GetSalesReport(string shopperId)
+        {
+            var report = await _service.GetSalesReportAsync(shopperId);
+            return Ok(report);
+        }
+
+
         [HttpGet("my-orders")]
         public async Task<IActionResult> GetMyOrders()
         {
@@ -65,6 +72,29 @@ namespace mamisum_api.Controllers
             if (string.IsNullOrEmpty(customerId)) return Unauthorized();
 
             var orders = await _service.GetOrdersByCustomerIdAsync(customerId);
+            return Ok(orders);
+        }
+
+        [HttpGet("total-orders/{id}")]
+        public async Task<IActionResult> GetOrderSummary(string id)
+        {
+            var (orderNo, totalAmount, deliveryStatus) = await _service.GetOrderSummaryAsync(id);
+            if (orderNo == null) return NotFound("Order not found");
+
+            return Ok(new
+            {
+                OrderNo = orderNo,
+                TotalBillAmount = totalAmount,
+                DeliveryStatus = deliveryStatus
+            });
+        }
+
+        [Authorize]
+        [HttpGet("shopper-orders")]
+        public async Task<IActionResult> GetOrdersByShopper()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var orders = await _service.GetOrdersByShopperAsync(userId);
             return Ok(orders);
         }
 
@@ -87,6 +117,16 @@ namespace mamisum_api.Controllers
             return success ? NoContent() : StatusCode(500);
         }
 
+        [HttpPatch("delivery-status/{id}")]
+        public async Task<IActionResult> UpdateDeliveryStatus(string id, [FromBody] string newStatus)
+        {
+            var success = await _service.UpdateDeliveryStatusAsync(id, newStatus);
+            if (!success) return NotFound("Order not found or update failed");
+
+            return Ok(new { Message = "Delivery status updated successfully." });
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -94,13 +134,6 @@ namespace mamisum_api.Controllers
             return success ? NoContent() : NotFound();
         }
 
-        [Authorize]
-        [HttpGet("shopper-orders")]
-        public async Task<IActionResult> GetOrdersByShopper()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var orders = await _service.GetOrdersByShopperAsync(userId);
-            return Ok(orders);
-        }
+     
     }
 }

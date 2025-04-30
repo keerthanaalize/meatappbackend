@@ -26,11 +26,20 @@ namespace mamisum_api.Services
         {
             _logger.LogInformation($"Attempting to register user with email: {request.Email}");
 
-            var existingUser = await _users.Find(u => u.Email == request.Email).FirstOrDefaultAsync();
+            var existingUser = await _users.Find(u => u.Email.ToLower() == request.Email.ToLower()).FirstOrDefaultAsync();
+
             if (existingUser != null)
             {
-                _logger.LogWarning($"User with email {request.Email} already exists.");
-                return false;
+                if (existingUser.Role == request.Role)
+                {
+                    _logger.LogWarning($"User with email {request.Email} already registered as {request.Role}.");
+                    return false; 
+                }
+                else
+                {
+                    _logger.LogWarning($"User with email {request.Email} already exists with role: {existingUser.Role}. Cannot register as {request.Role}.");
+                    return false; 
+                }
             }
 
             var newUser = new User
@@ -53,6 +62,7 @@ namespace mamisum_api.Services
                 return false;
             }
         }
+
 
         private string HashPassword(string password)
         {
