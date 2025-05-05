@@ -75,18 +75,15 @@ namespace mamisum_api.Controllers
             return Ok(orders);
         }
 
-        [HttpGet("total-orders/{id}")]
-        public async Task<IActionResult> GetOrderSummary(string id)
+        [HttpGet("total-orders/order-summaries")]
+        public async Task<IActionResult> GetShopperOrderSummaries()
         {
-            var (orderNo, totalAmount, deliveryStatus) = await _service.GetOrderSummaryAsync(id);
-            if (orderNo == null) return NotFound("Order not found");
+            string shopperId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            if (string.IsNullOrEmpty(shopperId))
+                return Unauthorized();
 
-            return Ok(new
-            {
-                OrderNo = orderNo,
-                TotalBillAmount = totalAmount,
-                DeliveryStatus = deliveryStatus
-            });
+            var summaries = await _service.GetShopperOrderSummariesAsync(shopperId);
+            return Ok(summaries);
         }
 
         [Authorize]

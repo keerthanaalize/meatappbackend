@@ -37,6 +37,12 @@ namespace mamisum_api.Services
             return await _meatRepo.GetProductsAsync(userId);
         }
 
+        public async Task<List<Product>> GetProductsByShopIdAsync(string shopId)
+        {
+            return await _meatRepo.GetProductsByShopIdAsync(shopId);
+        }
+
+
         public async Task<List<Product>> GetAllProductsAsync()
         {
             return await _meatRepo.GetAllProductsAsync();

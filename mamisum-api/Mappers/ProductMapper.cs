@@ -24,6 +24,7 @@ namespace mamisum_api.Mappers
                 Rating = dto.Rating,
                 Favourite = dto.Favourite,
                 UserId = userId,
+                ShopId = dto.ShopId,
                 ImageUrl = dto.ImageFile != null
                     ? await imageService.UploadImageAsync(dto.ImageFile, "products")
                     : string.Empty

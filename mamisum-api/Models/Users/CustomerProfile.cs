@@ -16,5 +16,7 @@ namespace mamisum_api.Models.Users
         public string State { get; set; } = string.Empty;
         public string ProfileImage { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
+        [BsonElement("Location")]
+        public double[] Location { get; set; } = new double[2];
     }
 }

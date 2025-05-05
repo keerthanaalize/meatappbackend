@@ -31,16 +31,37 @@ namespace mamisum_api.Controllers
         public async Task<IActionResult> GetAll() =>
             Ok(await _service.GetAllAsync());
 
+        /* [AllowAnonymous]
+         [HttpGet("nearby")]
+         public async Task<IActionResult> GetNearbyShops()
+         {
+             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+             if (string.IsNullOrEmpty(userId))
+                 return Unauthorized("User not found");
+
+             var result = await _service.GetNearbyShopsAsync(userId, _customerRepo);
+             return Ok(result);
+         }*/
+
         [AllowAnonymous]
-        [HttpGet("nearby")]
-        public async Task<IActionResult> GetNearbyShops()
+        [HttpGet("by-city")]
+        public async Task<IActionResult> GetShopsByCity([FromQuery] string city)
+        {
+            if (string.IsNullOrWhiteSpace(city))
+                return BadRequest("City name is required");
+
+            var shops = await _service.GetShopsByCityAsync(city);
+            return Ok(shops);
+        }
+
+        [HttpGet("nearby-shops")]
+        public async Task<IActionResult> GetNearbyShops([FromQuery] double maxDistance = 5)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized("User not found");
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            var result = await _service.GetNearbyShopsAsync(userId, _customerRepo);
-            return Ok(result);
+            var shops = await _service.GetNearbyShopsByLocationAsync(userId, _customerRepo, maxDistance);
+            return Ok(shops);
         }
 
 

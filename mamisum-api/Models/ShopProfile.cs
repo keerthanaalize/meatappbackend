@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using MongoDB.Driver.GeoJsonObjectModel;
 
 namespace mamisum_api.Models
 {
@@ -22,9 +23,9 @@ namespace mamisum_api.Models
         public string ShopCloseTime { get; set; } = string.Empty;
         public string ShopDate { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
+
+        [BsonElement("Location")]
+        public GeoJsonPoint<GeoJson2DGeographicCoordinates>? Location { get; set; }
     }
 }
-
-
- 
-    
+   

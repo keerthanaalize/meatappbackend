@@ -20,6 +20,11 @@ namespace mamisum_api.Repositories
             return await _products.Find(p => p.UserId == userId).ToListAsync();
         }
 
+        public async Task<List<Product>> GetProductsByShopIdAsync(string shopId)
+        {
+            return await _products.Find(p => p.ShopId == shopId).ToListAsync();
+        }
+
         public async Task<Product?> GetMeatByIdAsync(string id) =>
             await _products.Find(m => m.Id == id).FirstOrDefaultAsync();
 

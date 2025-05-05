@@ -21,8 +21,11 @@ namespace mamisum_api.Controllers
         public async Task<IActionResult> GetMyCart()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cart = await _cartService.GetCartsAsync(userId);
-            return Ok(cart);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var cartWithFav = await _cartService.GetCartWithFavoriteAsync(userId);
+            return Ok(cartWithFav);
         }
 
         [HttpPost]
@@ -40,7 +43,7 @@ namespace mamisum_api.Controllers
             var success = await _cartService.UpdateCartAsync(cart);
             return success ? Ok(cart) : NotFound();
         }
-
+         
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveFromCart(string id)
         {

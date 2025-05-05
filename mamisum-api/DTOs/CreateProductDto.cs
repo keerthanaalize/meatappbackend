@@ -15,6 +15,7 @@
         public string Tags { get; set; } = string.Empty;
         public string Rating { get; set; } = string.Empty;
         public bool Favourite { get; set; } = false;
+        public string ShopId { get; set; } = string.Empty;
         public IFormFile? ImageFile { get; set; }
     }
 

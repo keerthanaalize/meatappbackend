@@ -1,6 +1,9 @@
-﻿using mamisum_api.Models;
+﻿using mamisum_api.DTOs;
+using mamisum_api.Helpers;
+using mamisum_api.Models;
 using mamisum_api.Models.Users;
 using mamisum_api.Repositories;
+using MongoDB.Bson;
 
 namespace mamisum_api.Services
 {
@@ -36,16 +39,22 @@ namespace mamisum_api.Services
             return await _repo.GetOrderByIdAsync(id);
         }
 
-        public async Task<object> GetSalesReportAsync(string shopperId)
+        public async Task<List<SalesReportItemDto>> GetSalesReportAsync(string shopperId)
         {
             var orders = await _repo.GetOrdersByShopperAsync(shopperId);
-            var productSales = new Dictionary<string, (string itemName, int quantity, decimal revenue)>();
-
-            int totalOrders = orders.Count;
-            decimal totalSales = 0;
+            var report = new List<SalesReportItemDto>();
 
             foreach (var order in orders)
             {
+                var reportItem = new SalesReportItemDto
+                {
+                    OrderNo = order.OrderNo,
+                    OrderDate = order.Id.CreationTimeFromObjectId(), 
+                    SGST = decimal.TryParse(order.SGST, out var sgst) ? sgst : 0,
+                    CGST = decimal.TryParse(order.CGST, out var cgst) ? cgst : 0,
+                    TotalBillAmount = decimal.TryParse(order.TotalBillAmount, out var total) ? total : 0
+                };
+
                 foreach (var item in order.Items)
                 {
                     var product = await _productRepo.GetMeatByIdAsync(item.ProductId);
@@ -53,46 +62,46 @@ namespace mamisum_api.Services
                     {
                         decimal price = decimal.TryParse(item.Price, out var p) ? p : 0;
                         int qty = item.Quantity;
-                        decimal itemRevenue = price * qty;
-                        totalSales += itemRevenue;
+                        decimal itemTotal = price * qty;
 
-                        if (productSales.ContainsKey(item.ProductId))
+                        reportItem.Products.Add(new SalesProductDto
                         {
-                            var existing = productSales[item.ProductId];
-                            productSales[item.ProductId] = (existing.itemName, existing.quantity + qty, existing.revenue + itemRevenue);
-                        }
-                        else
-                        {
-                            productSales[item.ProductId] = (item.ItemName, qty, itemRevenue);
-                        }
+                            ProductId = item.ProductId,
+                            ProductName = item.ItemName,
+                            Quantity = qty,
+                            Price = price,
+                            Total = itemTotal
+                        });
                     }
+                }
+
+                if (reportItem.Products.Any())
+                {
+                    report.Add(reportItem);
                 }
             }
 
-            return new
-            {
-                TotalOrders = totalOrders,
-                TotalSales = totalSales,
-                ProductsSold = productSales.Select(p => new
-                {
-                    ProductId = p.Key,
-                    ItemName = p.Value.itemName,
-                    QuantitySold = p.Value.quantity,
-                    Revenue = p.Value.revenue
-                })
-            };
+            return report;
         }
 
-
-        public async Task<(string? OrderNo, decimal? TotalBillAmount, string? DeliveryStatus)> GetOrderSummaryAsync(string orderId)
+        public async Task<List<object>> GetShopperOrderSummariesAsync(string shopperId)
         {
-            var order = await _repo.GetOrderByIdAsync(orderId);
-            if (order == null) return (null, null, null);
+            var orders = await _repo.GetOrdersByShopperAsync(shopperId);
 
-            if (!decimal.TryParse(order.TotalBillAmount, out var totalAmount))
-                totalAmount = 0;
+            var summaries = orders.Select(order =>
+            {
+                decimal.TryParse(order.TotalBillAmount, out var totalAmount);
 
-            return (order.OrderNo, totalAmount, order.DeliveryStatus);
+                return new
+                {
+                    Id = order.Id,
+                    OrderNo = order.OrderNo,
+                    TotalBillAmount = totalAmount,
+                    DeliveryStatus = order.DeliveryStatus
+                };
+            }).ToList<object>();
+
+            return summaries;
         }
 
         public async Task<bool> UpdateDeliveryStatusAsync(string orderId, string newStatus)

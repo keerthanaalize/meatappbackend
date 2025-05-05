@@ -17,7 +17,8 @@ namespace mamisum_api.Mappers
                 City = dto.City,
                 State = dto.State,
                 ProfileImage = dto.ImageFile != null ? await imageService.UploadImageAsync(dto.ImageFile, "profile") : string.Empty,
-                UserId = userId
+                UserId = userId,
+                Location = new[] { dto.Longitude, dto.Latitude }
             };
         }
     }

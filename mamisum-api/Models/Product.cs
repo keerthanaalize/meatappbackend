@@ -39,5 +39,7 @@ namespace mamisum_api.Models
         public bool Favourite { get; set; }
         [BsonElement("UserId")]
         public string UserId { get; set; } = string.Empty;
+        [BsonElement("ShopId")]
+        public string ShopId { get; set; } = string.Empty;
     }
 }

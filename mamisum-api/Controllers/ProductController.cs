@@ -51,6 +51,17 @@ namespace mamisum_api.Controllers
             return Ok(products);
         }
 
+        [AllowAnonymous]
+        [HttpGet("shop-products/{shopId}")]
+        public async Task<IActionResult> GetProductsByShopId(string shopId)
+        {
+            if (string.IsNullOrEmpty(shopId)) return BadRequest("Shop ID is required.");
+
+            var products = await _meatService.GetProductsByShopIdAsync(shopId);
+            return Ok(products);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMeatById(string id)
         {

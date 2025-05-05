@@ -37,6 +37,9 @@ namespace mamisum_api.Services
             profile.MobileNo = dto.MobileNo;
             profile.EmailId = dto.EmailId;
             profile.Address = dto.Address;
+            profile.City = dto.City;
+            profile.Location = new double[] { dto.Longitude, dto.Latitude };
+            profile.State = dto.State;
 
             if (dto.ImageFile != null)
                 profile.ProfileImage = await _imageService.UploadImageAsync(dto.ImageFile, "profile");

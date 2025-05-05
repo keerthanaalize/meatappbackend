@@ -13,6 +13,8 @@
         public string ShopOpenTime { get; set; } = string.Empty;
         public string ShopCloseTime { get; set; } = string.Empty;
         public string ShopDate { get; set; } = string.Empty;
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public IFormFile? ShopImage { get; set; }
         public IFormFile? DocumentImage { get; set; }
     }

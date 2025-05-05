@@ -10,6 +10,7 @@ namespace mamisum_api.Repositories
         Task<bool> UpdateMeatAsync(Product meat);
         Task<bool> DeleteMeatAsync(string id);
         Task<List<Product>> GetMeatsByUserIdAsync(string userId);
+        Task<List<Product>> GetProductsByShopIdAsync(string shopId);
         Task<List<Product>> GetAllProductsAsync();
 
     }

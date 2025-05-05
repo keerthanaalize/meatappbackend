@@ -1,6 +1,7 @@
 ﻿using mamisum_api.DTOs;
 using mamisum_api.Models;
 using mamisum_api.Services;
+using MongoDB.Driver.GeoJsonObjectModel;
 
 namespace mamisum_api.Mappers
 {
@@ -23,7 +24,10 @@ namespace mamisum_api.Mappers
                 ShopDate = dto.ShopDate,
                 ShopCategory = dto.ShopCategory,
                 ShopState = dto.ShopState,
-                UserId = userId
+                UserId = userId,
+                Location = new GeoJsonPoint<GeoJson2DGeographicCoordinates>(
+    new GeoJson2DGeographicCoordinates(dto.Longitude, dto.Latitude)
+),
             };
         }
     }
