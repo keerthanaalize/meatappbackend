@@ -1,4 +1,6 @@
-﻿namespace mamisum_api.DTOs
+﻿using mamisum_api.Models.Users;
+
+namespace mamisum_api.DTOs
 {
     public class CartWithFavoriteDto
     {
@@ -10,6 +12,10 @@
         public decimal Discount { get; set; }
         public string Description { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
-        public string IsFavorite { get; set; } = "No";
+        public string Rating { get; set; } = string.Empty;
+        public string VoiceMessageUrl { get; set; } = string.Empty;
+
+        public bool IsFavorite => Favorite != null;
+        public Favorite? Favorite { get; set; }
     }
 }

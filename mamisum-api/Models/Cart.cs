@@ -25,7 +25,12 @@ namespace mamisum_api.Models
 
         [BsonElement("Description")]
         public string Description { get; set; } = string.Empty;
-
+        [BsonElement("isFavorite")]
+        public bool isFavorite { get; set; } = false;
+        [BsonElement("Rating")]
+        public string Rating { get; set; } = string.Empty;
+        [BsonElement("VoiceMessageUrl")]
+        public string VoiceMessageUrl { get; set; } = string.Empty;
         [BsonElement("UserId")]
         public string UserId { get; set; } = string.Empty;
     }

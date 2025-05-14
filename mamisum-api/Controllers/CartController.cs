@@ -24,8 +24,8 @@ namespace mamisum_api.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
-            var cartWithFav = await _cartService.GetCartWithFavoriteAsync(userId);
-            return Ok(cartWithFav);
+            var cartWithFavorites = await _cartService.GetCartWithFavoriteAsync(userId);
+            return Ok(cartWithFavorites);
         }
 
         [HttpPost]
@@ -34,6 +34,41 @@ namespace mamisum_api.Controllers
             cart.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _cartService.AddToCartAsync(cart);
             return Ok(cart);
+        }
+
+        [HttpPost("{id}/voice-message")]
+        public async Task<IActionResult> UploadVoiceMessage(string id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Invalid audio file");
+
+            if (!file.ContentType.StartsWith("audio/"))
+                return BadRequest("Only audio files are allowed");
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var folderPath = Path.Combine("wwwroot", "voice_messages");
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            var filePath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var voiceMessageUrl = $"{baseUrl}/voice_messages/{fileName}";
+
+            var cart = await _cartService.GetCartByIdAsync(id);
+            if (cart == null)
+                return NotFound();
+
+            cart.VoiceMessageUrl = voiceMessageUrl;
+            var updated = await _cartService.UpdateCartAsync(cart);
+
+            return updated ? Ok(new { voiceMessageUrl }) : StatusCode(500, "Failed to update cart");
         }
 
         [HttpPut("{id}")]

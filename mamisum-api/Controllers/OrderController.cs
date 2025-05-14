@@ -64,6 +64,26 @@ namespace mamisum_api.Controllers
             return Ok(report);
         }
 
+        [HttpGet("user/my-orders/by-status")]
+        public async Task<IActionResult> GetOrdersByStatus([FromQuery] string status)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var orders = await _service.GetOrdersByCustomerAndStatusAsync(userId, status);
+            return Ok(orders);
+        }
+
+
+        [HttpGet("shopper/my-orders/by-status")]
+        public async Task<IActionResult> GetShopperOrdersByStatus([FromQuery] string status)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var orders = await _service.GetOrdersByShopperAndStatusAsync(userId, status);
+            return Ok(orders);
+        }
+
 
         [HttpGet("my-orders")]
         public async Task<IActionResult> GetMyOrders()

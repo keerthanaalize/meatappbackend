@@ -31,6 +31,8 @@ namespace mamisum_api.Models
         public string CustomerId { get; set; } = string.Empty;
         [BsonElement("DeliveryStatus")]
         public string DeliveryStatus { get; set; } = string.Empty;
+        [BsonElement("CreatedAt")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 
     public class OrderItem
@@ -46,5 +48,6 @@ namespace mamisum_api.Models
 
         [BsonElement("Price")]
         public string Price { get; set; } = string.Empty;
+       
     }
 }

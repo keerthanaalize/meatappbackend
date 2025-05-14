@@ -19,24 +19,35 @@ namespace mamisum_api.Services
         {
             var carts = await _cartRepo.GetCartsByUserIdAsync(userId);
             var favorites = await _favoriteRepo.GetByUserIdAsync(userId);
-            var favoriteProductIds = favorites
-                .Where(f => !string.IsNullOrEmpty(f.ProductId))
-                .Select(f => f.ProductId)
-                .ToHashSet();
 
-            return carts.Select(cart => new CartWithFavoriteDto
+            // Index favorites by ProductId for quick lookup
+            var favoritesDict = favorites
+                .Where(f => !string.IsNullOrEmpty(f.ProductId))
+                .ToDictionary(f => f.ProductId!);
+
+            var cartDtos = carts.Select(cart =>
             {
-                Id = cart.Id,
-                ProductId = cart.ProductId,
-                ProductName = cart.ProductName,
-                Quantity = cart.Quantity,
-                Price = cart.Price,
-                Discount = cart.Discount,
-                Description = cart.Description,
-                UserId = cart.UserId,
-                IsFavorite = favoriteProductIds.Contains(cart.ProductId) ? "Yes" : "No"
+                favoritesDict.TryGetValue(cart.ProductId, out var favorite);
+
+                return new CartWithFavoriteDto
+                {
+                    Id = cart.Id,
+                    ProductId = cart.ProductId,
+                    ProductName = cart.ProductName,
+                    Quantity = cart.Quantity,
+                    Price = cart.Price,
+                    Discount = cart.Discount,
+                    Description = cart.Description,
+                    UserId = cart.UserId,
+                    Rating = cart.Rating,
+                    VoiceMessageUrl = cart.VoiceMessageUrl,
+                    Favorite = favorite 
+                };
             }).ToList();
+
+            return cartDtos;
         }
+
         public async Task<List<Cart>> GetCartsAsync(string userId) =>
             await _cartRepo.GetCartsByUserIdAsync(userId);
 

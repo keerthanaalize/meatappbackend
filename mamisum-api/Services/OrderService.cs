@@ -117,6 +117,20 @@ namespace mamisum_api.Services
         {
             return await _customerRepo.GetByUserIdAsync(customerId);
         }
+
+        public async Task<List<Order>> GetOrdersByCustomerAndStatusAsync(string customerId, string status)
+        {
+            var orders = await _repo.GetOrdersByCustomerIdAsync(customerId);
+            return orders.Where(o => string.Equals(o.DeliveryStatus, status, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        public async Task<List<Order>> GetOrdersByShopperAndStatusAsync(string shopperId, string status)
+        {
+            var orders = await _repo.GetOrdersByShopperAsync(shopperId);
+            return orders.Where(o => string.Equals(o.DeliveryStatus, status, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+
         public async Task<List<Order>> GetOrdersByShopperAsync(string shopperId) =>
             await _repo.GetOrdersByShopperAsync(shopperId);
     }
