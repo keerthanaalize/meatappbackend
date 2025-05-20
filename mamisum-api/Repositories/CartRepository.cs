@@ -38,5 +38,11 @@ namespace mamisum_api.Repositories
             var result = await _carts.DeleteOneAsync(c => c.Id == id);
             return result.DeletedCount > 0;
         }
+
+        public async Task<bool> ClearCartAsync(string userId)
+        {
+            var result = await _carts.DeleteManyAsync(c => c.UserId == userId);
+            return result.DeletedCount > 0;
+        }
     }
 }

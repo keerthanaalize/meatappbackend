@@ -62,5 +62,9 @@ namespace mamisum_api.Services
 
         public async Task<bool> RemoveFromCartAsync(string id) =>
             await _cartRepo.RemoveFromCartAsync(id);
+
+        public async Task<bool> ClearCartAsync(string userId) =>
+            await _cartRepo.ClearCartAsync(userId);
+
     }
 }

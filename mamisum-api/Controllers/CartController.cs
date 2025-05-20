@@ -78,7 +78,19 @@ namespace mamisum_api.Controllers
             var success = await _cartService.UpdateCartAsync(cart);
             return success ? Ok(cart) : NotFound();
         }
-         
+
+        [HttpDelete("clear")]
+        public async Task<IActionResult> ClearCart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var success = await _cartService.ClearCartAsync(userId);
+            return success ? NoContent() : NotFound();
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveFromCart(string id)
         {

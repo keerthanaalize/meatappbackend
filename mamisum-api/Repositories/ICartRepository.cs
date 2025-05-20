@@ -9,5 +9,6 @@ namespace mamisum_api.Repositories
         Task AddToCartAsync(Cart cart);
         Task<bool> UpdateCartAsync(Cart cart);
         Task<bool> RemoveFromCartAsync(string id);
+        Task<bool> ClearCartAsync(string userId);
     }
 }
