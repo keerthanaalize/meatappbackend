@@ -66,7 +66,7 @@ namespace mamisum_api.Controllers
                     _pendingRegistrations.Remove(request.Email);
                     var user = await _userService.GetUserByEmail(request.Email);
                     var token = _authService.GenerateToken(user.Id, request.Email, user.Role);
-                    return Ok(new { Success = true, Message = "Registration successful", Token = token });
+                    return Ok(new { Success = true, UserId= user.Id,  Message = "Registration successful", Token = token, Role =  user.Role });
                 }
             }
             return NotFound(new { Success = false, Message = "No pending request found." });
@@ -88,7 +88,7 @@ namespace mamisum_api.Controllers
             }
 
             var token = _authService.GenerateToken(user.Id, user.Email, user.Role);
-            return Ok(new { Success = true, Message = "Login successful", Token = token });
+            return Ok(new { Success = true, Message = "Login successful", Token = token, UserId = user.Id, Role = user.Role });
         }
 
         [HttpPost("updatePassword")]

@@ -79,7 +79,7 @@ namespace mamisum_api.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            var profile = await _service.GetByUserIdAsync(userId);
+            var profile = await _service.GetByUserAllIdAsync(userId);
             return profile == null ? NotFound("Profile not found.") : Ok(profile);
         }
 

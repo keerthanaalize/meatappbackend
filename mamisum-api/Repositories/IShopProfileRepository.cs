@@ -11,6 +11,7 @@ namespace mamisum_api.Repositories
         Task<bool> UpdateAsync(string id, ShopProfile profile);
         Task<List<ShopProfile>> GetNearbyShopsByLocationAsync(double longitude, double latitude, double maxDistanceInKm);
         Task<List<ShopProfile>> GetByCityAsync(string city);
+        Task<List<ShopProfile>> GetByUserAllIdAsync(string userId);
         Task<List<ShopProfile>> GetByCategoryAsync(string category);
     }
 }

@@ -24,7 +24,9 @@ namespace mamisum_api.Repositories
 
         public async Task<ShopProfile?> GetByUserIdAsync(string userId) => 
             await _collection.Find(p => p.UserId == userId).FirstOrDefaultAsync();
-        
+
+        public async Task<List<ShopProfile>> GetByUserAllIdAsync(string userId) =>
+    await _collection.Find(p => p.UserId == userId).ToListAsync();
 
         public async Task<ShopProfile?> GetByIdAsync(string id) =>
             await _collection.Find(p => p.Id == id).FirstOrDefaultAsync();
