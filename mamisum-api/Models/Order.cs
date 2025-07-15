@@ -48,6 +48,8 @@ namespace mamisum_api.Models
 
         [BsonElement("Price")]
         public string Price { get; set; } = string.Empty;
-       
+        [BsonElement("VoiceMessageUrl")]
+        public string VoiceMessageUrl{ get; set; } = string.Empty;
+
     }
 }
