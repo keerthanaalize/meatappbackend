@@ -91,38 +91,15 @@ namespace mamisum_api.Services
             }
         }
 
-        public async Task<bool> UpdatePassword(string email, string currentPassword, string newPassword)
+        public async Task<bool> UpdatePassword(string email, string newPassword)
         {
             var user = await GetUserByEmail(email);
-
-            if (user == null)
-            {
-                _logger.LogWarning($"No user found with email: {email}");
-                return false;
-            }
-
-            if (!VerifyPassword(currentPassword, user.PasswordHash))
-            {
-                _logger.LogWarning($"Password verification failed for email: {email}");
-                return false;
-            }
+            if (user == null) return false;
 
             var newPasswordHash = HashPassword(newPassword);
-            _logger.LogInformation($"New Password Hash: {newPasswordHash}");
-
             var update = Builders<User>.Update.Set(u => u.PasswordHash, newPasswordHash);
             var result = await _users.UpdateOneAsync(u => u.Email.ToLower() == email.ToLower(), update);
-
-            if (result.ModifiedCount > 0)
-            {
-                _logger.LogInformation($"Password updated successfully for email: {email}");
-                return true;
-            }
-            else
-            {
-                _logger.LogWarning($"Failed to update password for email: {email}");
-                return false;
-            }
+            return result.ModifiedCount > 0;
         }
 
         public async Task<bool> DeleteUserById(string id)

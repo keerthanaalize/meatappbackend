@@ -81,6 +81,11 @@ namespace mamisum_api.Controllers
                 return NotFound(new { Success = false, Message = "User not registered. Please register first." });
             }
 
+            if (!string.Equals(user.Role, request.Role, StringComparison.OrdinalIgnoreCase))
+            {
+                return Unauthorized(new { Success = false, Message = "Selected role does not match your account role." });
+            }
+
             bool isPasswordValid = _userService.VerifyPassword(request.Password, user.PasswordHash);
             if (!isPasswordValid)
             {
@@ -111,6 +116,34 @@ namespace mamisum_api.Controllers
 
             return Ok(new { Success = true, Message = "OTP sent to email for password update", Otp = otp });
         }
+
+        [HttpPost("updatepassword-otpverify")]
+        public async Task<IActionResult> VerifyOtpForPasswordUpdate([FromBody] OtpVerificationRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isValid = _otpService.VerifyOtp(request.Email, request.Otp);
+            if (!isValid)
+            {
+                return Unauthorized(new { Success = false, Message = "Invalid OTP" });
+            }
+
+            if (_pendingPasswordUpdates.TryGetValue(request.Email.ToLower(), out var updateRequest))
+            {
+                var success = await _userService.UpdatePassword(request.Email, updateRequest.NewPassword);
+                if (success)
+                {
+                    _pendingPasswordUpdates.Remove(request.Email.ToLower());
+                    return Ok(new { Success = true, Message = "Password updated successfully." });
+                }
+            }
+
+            return NotFound(new { Success = false, Message = "No pending password update found." });
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
